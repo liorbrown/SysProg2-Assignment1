@@ -25,12 +25,17 @@ namespace graph{
 
     class Graph{
         private:
+            int negativeEdges;
             int nCount;
             Vertex* vertices;
             Edge* edges;
             
         public:
-            Graph(int nVertices): nCount(nVertices), vertices(new Vertex[nVertices]), edges(nullptr){}
+            Graph(int nVertices): 
+                nCount(nVertices), 
+                vertices(new Vertex[nVertices]), 
+                edges(nullptr),
+                negativeEdges(0){}
             bool addEdge(int v1, int v2, int weight);
             bool addEdge(int v1, int v2);
             void removeEdge(int v1, int v2);
