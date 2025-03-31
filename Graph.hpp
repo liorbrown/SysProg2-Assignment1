@@ -8,7 +8,7 @@ namespace graph{
             Vertex* v1;
             Vertex* v2;
             Edge* next;
-
+ 
         public:
             Edge(Vertex* v1, Vertex* v2, int weight):v1(v1), v2(v2), weight(weight), next(nullptr){}
             Edge(Vertex* v1, Vertex* v2) {Edge(v1,v2,DEFAULT_W);}
