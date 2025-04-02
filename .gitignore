@@ -4,3 +4,5 @@
 a.out
 main
 Graph.o
+Algorithms.o
+Queue.o

@@ -18,6 +18,27 @@ namespace graph{
         }
     }
 
+    unsigned int *Graph::getAdjacents(const unsigned int v) const{
+
+        if (v >= this->nVertices)
+            throw out_of_range{"The given vertices not exist in graph 🫤"};
+
+        unsigned int degree = (*this)[v].getDegree();
+
+        if (!degree)
+            return nullptr;
+
+        unsigned int* result = new unsigned int[degree];
+        EdgeNode* currEdge = this->edges;
+
+        for (size_t i = 0; i < degree; i++){
+            result[i] = currEdge->getEdge()->getAdjacent(v);
+            currEdge = currEdge->getNext();
+        }
+        
+        return result;
+    }
+
     Graph::~Graph(){
         delete[] this->vertices;
         this->vertices = nullptr;
@@ -42,15 +63,15 @@ namespace graph{
         if (v1 == v2)
             throw invalid_argument{"This graph is simple, edge from vertex to itself is not allowed 🙄"};
 
-        for (EdgeNode* e = this->vertices[v1].getEdges(); e ; e = e->getNext())
+        for (EdgeNode* e = (*this)[v1].getEdges(); e ; e = e->getNext())
             if (e->getEdge()->getV1() == v2 || e->getEdge()->getV2() == v2)
                 throw invalid_argument{"Edge already exist 🙄"};
         
         Edge* newEdge = new Edge(v1, v2, weight);
 
         this->addEdge(newEdge, this->edges);
-        this->addEdge(newEdge, (++(this->vertices[v1])).getEdges());
-        this->addEdge(newEdge, (++(this->vertices[v2])).getEdges());
+        this->addEdge(newEdge, (++((*this)[v1])).getEdges());
+        this->addEdge(newEdge, (++((*this)[v2])).getEdges());
 
         if (weight < 0)
             this->negativeEdges++;
@@ -66,7 +87,10 @@ namespace graph{
         if (v1 >= this->nVertices || v2 >= this->nVertices)
             throw out_of_range{"The given vertices not exists in graph 😶"};
 
-        EdgeNode** previous = &this->vertices[v1].getEdges();
+        if (v1 == v2)
+            throw invalid_argument{"This graph is simple, edge from vertex to itself is not allowed 🙄"};
+
+        EdgeNode** previous = &(*this)[v1].getEdges();
         EdgeNode* currEdge = *previous;
 
         while (currEdge){
@@ -75,7 +99,7 @@ namespace graph{
             if (edge->getV1() == v2 || edge->getV2() == v2){ 
                 
                 this->removeEdge(edge, &this->edges);
-                this->removeEdge(edge, &(--(this->vertices[v2])).getEdges());
+                this->removeEdge(edge, &(--((*this)[v2])).getEdges());
 
                 if (edge->getWeight() < 0)
                     this->negativeEdges--;

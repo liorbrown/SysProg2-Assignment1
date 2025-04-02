@@ -18,7 +18,9 @@ namespace graph{
 
             EdgeNode* getEdges() const { return this->edges;}
             EdgeNode*& getEdges() { return this->edges;}
+            unsigned int getDegree() const {return this->degree;}
             
+
             Vertex& operator++(){
                 this->degree++;
                 return *this;
@@ -44,8 +46,11 @@ namespace graph{
                 weight(weight){}
             
             int getWeight() const {return this->weight;}
-            int getV1() const {return this->v1;}
-            int getV2() const {return this->v2;}
+            unsigned int getV1() const {return this->v1;}
+            unsigned int getV2() const {return this->v2;}
+            unsigned int getAdjacent(const unsigned int v) const{
+                return (this->v1 == v ? this->v2 : this->v1);
+            }
 
             friend ostream& operator<<(ostream& os, const Edge& e);
     };
@@ -81,8 +86,11 @@ namespace graph{
                 edges(nullptr),
                 negativeEdges(0){}
             ~Graph();
-            void addEdge(const unsigned int, const unsigned int, const int);
+            void addEdge(const unsigned int, const unsigned int, const int weight = DEFAULT_W);
             void removeEdge(const unsigned int, const unsigned int);
             void print_graph() const;
+            unsigned int getnVertices() const {return this->nVertices;}
+            unsigned int* getAdjacents(const unsigned int) const;
+            Vertex& operator[](const int v) const {return this->vertices[v];}
     };
 }
