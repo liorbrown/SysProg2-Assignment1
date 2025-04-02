@@ -1,13 +1,15 @@
 #pragma once
 
-#include "iostream"
+#include <iostream>
+
+using namespace std;
 
 namespace graph{
     class EdgeNode;
 
     class Vertex{
         private:
-            int degree;
+            unsigned int degree;
             EdgeNode* edges;
 
         public:
@@ -16,37 +18,46 @@ namespace graph{
 
             EdgeNode* getEdges() const { return this->edges;}
             EdgeNode*& getEdges() { return this->edges;}
+            
+            Vertex& operator++(){
+                this->degree++;
+                return *this;
+            }
+
+            Vertex& operator--(){
+                this->degree--;
+                return *this;
+            }
     };
 
     class Edge{
 
         private:
-            int weight;
-            unsigned int v1;
-            unsigned int v2;
+            const int weight;
+            const unsigned int v1;
+            const unsigned int v2;
        
         public:
-            Edge(unsigned int v1, unsigned int v2, int weight):
+            Edge(const unsigned int v1, const unsigned int v2, const int weight):
                 v1(v1), 
                 v2(v2), 
                 weight(weight){}
             
-            unsigned int getV1() const {return this->v1;}
-            unsigned int getV2() const {return this->v2;}
             int getWeight() const {return this->weight;}
-            void print_edge() const {
-                std::cout << this->v1 << " 🔗 " << this->v2 << std::endl;
-            }
-    };
+            int getV1() const {return this->v1;}
+            int getV2() const {return this->v2;}
 
+            friend ostream& operator<<(ostream& os, const Edge& e);
+    };
+  
     class EdgeNode{
         private:
-            Edge* edge;
+            const Edge* edge;
             EdgeNode* next;
 
         public:
-            EdgeNode(Edge* edge): edge(edge), next(nullptr){}
-            Edge* getEdge(){ return this->edge;}
+            EdgeNode(const Edge* edge): edge(edge), next(nullptr){}
+            const Edge* getEdge() const { return this->edge;}
             EdgeNode* getNext() const { return this->next;}
             EdgeNode*& getNext(){ return this->next;}
     };
@@ -54,23 +65,24 @@ namespace graph{
     class Graph{
         private:
             const static int DEFAULT_W = 1;
-            int negativeEdges;
-            int nVertices;
+            
+            unsigned int negativeEdges;
+            const unsigned int nVertices;
             Vertex* vertices;
             EdgeNode* edges;
-            void addEdge(Edge*, EdgeNode*&);
-            void removeEdge(EdgeNode*, EdgeNode**);
+
+            void addEdge(const Edge*, EdgeNode*&);
+            void removeEdge(const Edge*, EdgeNode**);
             
         public:
-            Graph(int nVertices):
+            Graph(const unsigned int nVertices):
                 nVertices(nVertices),
                 vertices(new Vertex[nVertices]), 
                 edges(nullptr),
                 negativeEdges(0){}
             ~Graph();
-            void addEdge(unsigned int, unsigned int, int);
-            void addEdge(unsigned int v1, unsigned int v2) {this->addEdge(v1, v2, DEFAULT_W);}
-            void removeEdge(unsigned int, unsigned int);
+            void addEdge(const unsigned int, const unsigned int, const int);
+            void removeEdge(const unsigned int, const unsigned int);
             void print_graph() const;
     };
 }
