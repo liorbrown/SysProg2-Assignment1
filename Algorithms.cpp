@@ -1,8 +1,9 @@
 #include "Algorithms.hpp"
 #include "Queue.hpp"
+#include "Heap.hpp"
 #include <stdexcept>
 
-#define VERTEX_NULL -1
+#define INF 999999
 
 using namespace graph;
 using namespace std;
@@ -14,25 +15,19 @@ Graph *Algorithms::bfs(const Graph &g, const unsigned int s)
     if (s >= nVertices)
         throw out_of_range{"The given vertices not exist in graph 🫤"};
 
-    int* pi = new int[nVertices];
-
-    setVAttributes(nVertices, pi, s, g);
-    Graph* result = buildGraph(nVertices, pi);
+    setVAttributes(g, &g[s]);
+    Graph* result = buildGraph(g);
 
     return result;
 }
 
-void Algorithms::setVAttributes(const unsigned int nVertices, 
-                                int *pi, 
-                                const unsigned int s, 
-                                const Graph &g)
+void Algorithms::setVAttributes(const Graph &g, Vertex* s)
 {
-    vColor* vColors = new vColor[nVertices];
+    initAttributes(g);
 
-    initAttributes(nVertices, vColors, pi);
+    s->getColor() = GRAY;
 
-    vColors[s] = GRAY;
-    pi[s] = VERTEX_NULL;
+    g.clearVertices();
 
     Queue q;
 
@@ -40,43 +35,43 @@ void Algorithms::setVAttributes(const unsigned int nVertices,
 
     while (!q.isEmpty())
     {
-        unsigned int v = q.dequeue();
+        Vertex* v = q.dequeue();
+        Vertex** adjacents = v->getAdjacents();
+        for (size_t i = 0; i < v->getDegree(); i++){
+            Vertex* adjacent = adjacents[i];
 
-        unsigned int *adjacents = g.getAdjacents(v);
-
-        for (size_t i = 0; i < g[v].getDegree(); i++)
-        {
-            unsigned int adjacent = adjacents[i];
-
-            if (vColors[adjacent] == WHITE)
-            {
-                vColors[adjacent] = GRAY;
-                pi[adjacent] = v;
+            if (adjacent->getColor() == WHITE){
+                adjacent->getColor() = GRAY;
+                adjacent->getPI() = v;
                 q.enqueue(adjacent);
             }
         }
 
-        delete adjacents;
-
-        vColors[v] = BLACK;
+        v->getColor() = BLACK;
     }
 }
 
-void Algorithms::initAttributes(const unsigned int nVertices, vColor *vColors, int *pi)
+void Algorithms::initAttributes(const Graph &g)
 {
-    for (size_t i = 0; i < nVertices; i++)
-    {
-        vColors[i] = WHITE;
-        pi[i] = VERTEX_NULL;
+    for (size_t i = 0; i < g.getnVertices(); i++){
+        g[i].getColor() = WHITE;
+        g[i].getPI() = nullptr;
+        g[i].getD() = INF;
     }
 }
 
-Graph *Algorithms::buildGraph(const unsigned int nVertices, int *pi){
-    Graph* result = new Graph(nVertices);
+Graph *Algorithms::buildGraph(const Graph &g){
+    unsigned int size = g.getnVertices();
 
-    for (size_t i = 0; i < nVertices; i++)
-        if (pi[i] != VERTEX_NULL)
-            result->addEdge(i, pi[i]);
+    Graph* result = new Graph(size);
+
+    for (size_t i = 0; i < size; i++)
+        if (g[i].getPI() != nullptr){
+
+            Vertex* v2 = g[i].getPI();
+
+            result->addEdge(i, v2->getID(), g[i].getWeight(v2));
+        }
     
     return result;
 }
@@ -84,43 +79,47 @@ Graph *Algorithms::buildGraph(const unsigned int nVertices, int *pi){
 Graph *Algorithms::dfs(const Graph &g, const unsigned int s){
 
     const unsigned int nVertices = g.getnVertices();
-    int* pi = new int[nVertices];
-    vColor* vColors = new vColor[nVertices];
     
-    initAttributes(nVertices, vColors, pi);
+    initAttributes(g);
 
     for (size_t i = 0; i < nVertices; i++)
     {
-        size_t v = i + s % nVertices;
+        Vertex* v = &g[i + s % nVertices];
 
-        if (vColors[v] == WHITE)
-            dfsVisit(g, v, vColors, pi);
+        if (v->getColor() == WHITE)
+            dfsVisit(g, v);
     }
 
-    Graph* result = buildGraph(nVertices, pi);
+    Graph* result = buildGraph(g);
 
     return result;
 }
 
-void Algorithms::dfsVisit(const Graph &g, const unsigned int v, vColor* vColors, int* pi){
+void Algorithms::dfsVisit(const Graph &g, Vertex* v){
     
-    vColors[v] = GRAY;
+    v->getColor() = GRAY;
 
-    const unsigned int* adjacents = g.getAdjacents(v);
+    Vertex** adjacents = v->getAdjacents();
+    
+    for (size_t i = 0; i < v->getDegree(); i++){
+        Vertex* adjacent = adjacents[i];
 
-    for (size_t i = 0; i < g[v].getDegree(); i++)
-    {
-        const unsigned int adjacent = adjacents[i];
-
-        if (vColors[adjacent] == WHITE){
-            pi[adjacent] = v;
-            dfsVisit(g, adjacent, vColors, pi);
+        if (adjacent->getColor() == WHITE){
+            adjacent->getPI() = v;
+            dfsVisit(g, adjacent);
         }
     }
 
-    delete adjacents;
+    v->getColor() = BLACK;
+}
 
-    vColors[v] = BLACK;
+void Algorithms::relax(const Edge& e, Vertex* v){
+    Vertex* u = e.getAdjacent(v);
+
+    if (u->getD() > v->getD() + e.getWeight()){
+        u->getD() = v->getD() + e.getWeight();
+        u->getPI() = v;
+    }
 }
 
 Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
@@ -128,19 +127,74 @@ Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
     if (g.isNegative())
         throw domain_error{"Can't run dijkstra on graph with negative edges"};
 
+    initAttributes(g);
+    int size = g.getnVertices();
+    g.clearVertices();
     
-    Graph* result = new Graph(g.getnVertices());
+    Heap q;
+
+    for (size_t i = 0; i < size; i++)
+        q.insert(&g[i]);
+    
+    while (!q.isEmpty()){
+        Vertex* v = q.extractMin();
+
+        for (EdgeNode* e = v->getEdges() ; e ; e = e->getNext())
+            relax(*e->getEdge(), v);        
+    }
+
+    Graph* result = buildGraph(g);
+
     return result;
 }
 
 Graph *Algorithms::prim(const Graph &g)
 {
-    Graph* result = new Graph(g.getnVertices());
+    initAttributes(g);
+    g.clearVertices();
+    Heap q;
+
+    for (size_t i = 0; i < g.getnVertices(); i++)
+        q.insert(&g[i]);
+    
+    g[0].getD() = 0;
+
+    while (!q.isEmpty()){
+        Vertex* v = q.extractMin();
+        Vertex** adjacents = v->getAdjacents();
+
+        for (size_t i = 0; i < v->getDegree(); i++){
+            Vertex* adjacent = adjacents[i];
+            const int weight = v->getWeight(adjacent);
+
+            if (adjacent->getIsInHeap() && weight < adjacent->getD()){
+                adjacent->getPI() = v;
+                adjacent->getD() = weight;
+            }
+        } 
+    }
+
+    Graph* result = buildGraph(g);
     return result;
 }
 
 Graph *Algorithms::kruskal(const Graph &g)
 {
     Graph* result = new Graph(g.getnVertices());
+
+    const Edge** edges = g.getSortedEdges();
+
+    g.clearVertices();
+
+    for (size_t i = 0; i < g.getnEdges(); i++){
+        Vertex* v1 = edges[i]->getV1();
+        Vertex* v2 = edges[i]->getV2();
+
+        if (v1->isUnioun(v2)){
+            result->addEdge(v1->getID(), v2->getID(), edges[i]->getWeight());
+            v1->getNext() = v2;
+        }
+    }
+  
     return result;
 }

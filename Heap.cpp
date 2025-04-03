@@ -3,29 +3,25 @@
 
 using namespace std;
 
-void Heap::insert(const unsigned int val){
-    Node* node = new Node(val);
-
-    node->getNext() = this->head;
-    this->head = node;
+void Heap::insert(Vertex* v){
+    v->getIsInHeap() = true;
+    v->getNext() = this->head;
+    this->head = v;
 }
 
-unsigned int Heap::extractMin(){
+Vertex* Heap::extractMin(){
     if (this->isEmpty())
         throw runtime_error{"Heap is empty 🫤"};
 
-    Node* minNode = this->head;
+    Vertex* min = this->head;
 
-    for (Node* n = minNode->getNext(); n ; n = n->getNext())
-        if (n->getVal() < minNode->getVal())
-            minNode = n;
+    for (Vertex* v = min->getNext(); v ; v = v->getNext())
+        if (v->getD() < min->getD())
+            min = v;
     
-    unsigned int min = minNode->getVal();
-
-    Node* prev = minNode->getPrev();
-    Node* next = minNode->getNext();
-
-    delete minNode;
+    min->getIsInHeap() = false;
+    Vertex* prev = min->getPrev();
+    Vertex* next = min->getNext();
 
     if (prev)
         prev->getNext() = next;

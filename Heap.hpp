@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Node.hpp"
+#include "Graph.hpp"
+
+using namespace graph;
 
 class Heap{
     private:
-        Node* head;
+        Vertex* head;
     public:
         Heap(): head(nullptr){}
-        ~Heap(){Node::destroy(this->head);}
-        void insert(const unsigned int);
-        unsigned int extractMin();
+        void insert(Vertex*);
+        Vertex* extractMin();
         bool isEmpty(){return !this->head;}
 };

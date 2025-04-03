@@ -1,21 +1,17 @@
 #pragma once
 
 #include "Graph.hpp"
+
 namespace graph{
-    enum vColor{
-        WHITE, GRAY, BLACK
-    };
 
     class Algorithms{
         private:
             Algorithms(){}
-            static void setVAttributes(const unsigned int nVertices,
-                                int *pi,
-                                const unsigned int s,
-                                const Graph &g);
-            static void initAttributes(const unsigned int nVertices, vColor *vColors, int *pi);
-            static Graph* buildGraph(const unsigned int nVertices, int *pi);
-            static void dfsVisit(const Graph &g, const unsigned int, vColor*, int*);
+            static void setVAttributes(const Graph&, Vertex*);
+            static void initAttributes(const Graph&);
+            static Graph* buildGraph(const Graph&);
+            static void dfsVisit(const Graph&, Vertex*);
+            static void relax(const Edge&, Vertex*);
 
         public:
             static Graph* bfs(const Graph &, const unsigned int);

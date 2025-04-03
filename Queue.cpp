@@ -3,27 +3,25 @@
 
 using namespace std;
 
-void Queue::enqueue(const unsigned int val){
-    Node* newNode = new Node(val);
-    
-    if (!this->isEmpty())
-        this->head->getPrev() = newNode;
-    else
-        this->tail = newNode;
+void Queue::enqueue(Vertex* v){
 
-    newNode->getNext() = this->head;
-    this->head = newNode;
+    if (!this->isEmpty())
+        this->head->getPrev() = v;
+    else
+        this->tail = v;
+
+    v->getNext() = this->head;
+    this->head = v;
 }
 
-unsigned int Queue::dequeue(){
+Vertex* Queue::dequeue(){
     if (this->isEmpty())
         throw runtime_error{"Queue is empty 🫤"}; 
     
-    int result = this->tail->getVal();
+    Vertex* result = this->tail;
 
-    Node* newTail = this->tail->getPrev();
+    Vertex* newTail = this->tail->getPrev();
     newTail->getNext() = nullptr;
-    delete this->tail;
     this->tail = newTail;
 
     return result;

@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Node.hpp"
+#include "Graph.hpp"
+
+using namespace graph;
 
 class Queue{
     private:
-        Node* head;
-        Node* tail;
+        Vertex* head;
+        Vertex* tail;
     public:
         Queue(): head(nullptr), tail(nullptr){}
-        ~Queue(){Node::destroy(this->head);}
         bool isEmpty(){return !this->head;}
-        void enqueue(const unsigned int);
-        unsigned int dequeue();
+        void enqueue(Vertex*);
+        Vertex* dequeue();
 };
