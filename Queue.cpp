@@ -1,18 +1,7 @@
 #include "Queue.hpp"
+#include <stdexcept>
 
-#define EMPTY_FLAG -1
-
-Queue::~Queue(){
-    Node* currNode = this->head;
-
-    while (currNode){
-        Node* next = currNode->getNext();
-
-        delete currNode;
-
-        currNode = next;
-    }
-}
+using namespace std;
 
 void Queue::enqueue(const unsigned int val){
     Node* newNode = new Node(val);
@@ -26,9 +15,9 @@ void Queue::enqueue(const unsigned int val){
     this->head = newNode;
 }
 
-int Queue::dequeue(){
+unsigned int Queue::dequeue(){
     if (this->isEmpty())
-        return EMPTY_FLAG;
+        throw runtime_error{"Queue is empty 🫤"}; 
     
     int result = this->tail->getVal();
 

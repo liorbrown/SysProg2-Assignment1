@@ -1,19 +1,6 @@
 #pragma once
 
-class Node{
-    private:
-        const unsigned int val;
-        Node* next;
-        Node* prev;
-    public:
-        Node(const unsigned int val): val(val), next(nullptr), prev(nullptr){}
-
-        unsigned int getVal(){return this->val;}
-        Node* getNext() const{return this->next;}
-        Node*& getNext() {return this->next;}
-        Node* getPrev() const{return this->prev;}
-        Node*& getPrev() {return this->prev;}
-};
+#include "Node.hpp"
 
 class Queue{
     private:
@@ -21,8 +8,8 @@ class Queue{
         Node* tail;
     public:
         Queue(): head(nullptr), tail(nullptr){}
-        ~Queue();
+        ~Queue(){Node::destroy(this->head);}
         bool isEmpty(){return !this->head;}
         void enqueue(const unsigned int);
-        int dequeue();
+        unsigned int dequeue();
 };

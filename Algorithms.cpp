@@ -5,6 +5,7 @@
 #define VERTEX_NULL -1
 
 using namespace graph;
+using namespace std;
 
 Graph *Algorithms::bfs(const Graph &g, const unsigned int s)
 {
@@ -39,7 +40,7 @@ void Algorithms::setVAttributes(const unsigned int nVertices,
 
     while (!q.isEmpty())
     {
-        int v = q.dequeue();
+        unsigned int v = q.dequeue();
 
         unsigned int *adjacents = g.getAdjacents(v);
 
@@ -124,6 +125,10 @@ void Algorithms::dfsVisit(const Graph &g, const unsigned int v, vColor* vColors,
 
 Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
 {
+    if (g.isNegative())
+        throw domain_error{"Can't run dijkstra on graph with negative edges"};
+
+    
     Graph* result = new Graph(g.getnVertices());
     return result;
 }

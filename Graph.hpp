@@ -91,6 +91,7 @@ namespace graph{
             void print_graph() const;
             unsigned int getnVertices() const {return this->nVertices;}
             unsigned int* getAdjacents(const unsigned int) const;
+            bool isNegative() const {return this->negativeEdges;}
             Vertex& operator[](const int v) const {return this->vertices[v];}
     };
 }
