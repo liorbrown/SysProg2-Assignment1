@@ -6,3 +6,9 @@ main
 Graph.o
 Algorithms.o
 Queue.o
+valgrind-3.24.0.tar.bz2
+valgrind-3.24.0
+main.o
+Heap.o
+main.out
+

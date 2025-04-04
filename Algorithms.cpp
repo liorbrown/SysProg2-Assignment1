@@ -8,7 +8,7 @@
 using namespace graph;
 using namespace std;
 
-Graph *Algorithms::bfs(const Graph &g, const unsigned int s)
+Graph *Algorithms::bfs(Graph &g, const unsigned int s)
 {
     const unsigned int nVertices = g.getnVertices();
 
@@ -21,7 +21,7 @@ Graph *Algorithms::bfs(const Graph &g, const unsigned int s)
     return result;
 }
 
-void Algorithms::setVAttributes(const Graph &g, Vertex* s)
+void Algorithms::setVAttributes(Graph &g, Vertex* s)
 {
     initAttributes(g);
 
@@ -51,7 +51,7 @@ void Algorithms::setVAttributes(const Graph &g, Vertex* s)
     }
 }
 
-void Algorithms::initAttributes(const Graph &g)
+void Algorithms::initAttributes(Graph &g)
 {
     for (size_t i = 0; i < g.getnVertices(); i++){
         g[i].getColor() = WHITE;
@@ -60,7 +60,7 @@ void Algorithms::initAttributes(const Graph &g)
     }
 }
 
-Graph *Algorithms::buildGraph(const Graph &g){
+Graph *Algorithms::buildGraph(Graph &g){
     unsigned int size = g.getnVertices();
 
     Graph* result = new Graph(size);
@@ -76,7 +76,7 @@ Graph *Algorithms::buildGraph(const Graph &g){
     return result;
 }
 
-Graph *Algorithms::dfs(const Graph &g, const unsigned int s){
+Graph *Algorithms::dfs(Graph &g, const unsigned int s){
 
     const unsigned int nVertices = g.getnVertices();
     
@@ -84,7 +84,7 @@ Graph *Algorithms::dfs(const Graph &g, const unsigned int s){
 
     for (size_t i = 0; i < nVertices; i++)
     {
-        Vertex* v = &g[i + s % nVertices];
+        Vertex* v = &g[(i + s) % nVertices];
 
         if (v->getColor() == WHITE)
             dfsVisit(g, v);
@@ -95,7 +95,7 @@ Graph *Algorithms::dfs(const Graph &g, const unsigned int s){
     return result;
 }
 
-void Algorithms::dfsVisit(const Graph &g, Vertex* v){
+void Algorithms::dfsVisit(Graph &g, Vertex* v){
     
     v->getColor() = GRAY;
 
@@ -122,7 +122,16 @@ void Algorithms::relax(const Edge& e, Vertex* v){
     }
 }
 
-Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
+bool Algorithms::isConnect(Graph& g){
+    if (!g.getnEdges())
+        return false;
+    
+    Graph* bfsGraph = bfs(g,0);
+
+    return (bfsGraph->getnEdges() == bfsGraph->getnVertices() - 1);
+}
+
+Graph* Algorithms::dijkstra(Graph &g, const unsigned int s)
 {
     if (g.isNegative())
         throw domain_error{"Can't run dijkstra on graph with negative edges"};
@@ -136,6 +145,8 @@ Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
     for (size_t i = 0; i < size; i++)
         q.insert(&g[i]);
     
+    g[s].getD() = 0;
+
     while (!q.isEmpty()){
         Vertex* v = q.extractMin();
 
@@ -148,8 +159,11 @@ Graph* Algorithms::dijkstra(const Graph &g, const unsigned int s)
     return result;
 }
 
-Graph *Algorithms::prim(const Graph &g)
+Graph* Algorithms::prim(Graph &g)
 {
+    if (!isConnect(g))
+        return nullptr;
+
     initAttributes(g);
     g.clearVertices();
     Heap q;
@@ -178,11 +192,14 @@ Graph *Algorithms::prim(const Graph &g)
     return result;
 }
 
-Graph *Algorithms::kruskal(const Graph &g)
+Graph *Algorithms::kruskal(Graph &g)
 {
+    if (!isConnect(g))
+        return nullptr;
+        
     Graph* result = new Graph(g.getnVertices());
 
-    const Edge** edges = g.getSortedEdges();
+    Edge** edges = g.getSortedEdges();
 
     g.clearVertices();
 
@@ -190,7 +207,7 @@ Graph *Algorithms::kruskal(const Graph &g)
         Vertex* v1 = edges[i]->getV1();
         Vertex* v2 = edges[i]->getV2();
 
-        if (v1->isUnioun(v2)){
+        if (!v1->isUnioun(v2)){
             result->addEdge(v1->getID(), v2->getID(), edges[i]->getWeight());
             v1->getNext() = v2;
         }

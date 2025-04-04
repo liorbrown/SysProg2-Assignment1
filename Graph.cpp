@@ -53,7 +53,12 @@ namespace graph{
         while (vRoot->getNext())
             vRoot = vRoot->getNext();
         
-        return (thisRoot == vRoot);
+        if (thisRoot == vRoot)
+            return true;
+        else{
+            thisRoot->getNext() = vRoot;
+            return false;
+        }
     }
 
     Graph::Graph(const unsigned int nVertices):
@@ -150,7 +155,7 @@ namespace graph{
                 previous = &currEdge->getNext();
                 currEdge = *previous;
             }
-        }
+        } 
 
         throw invalid_argument{"Edge not exist 🤨"};
     }
@@ -177,7 +182,7 @@ namespace graph{
         cout << "Those are the graph edges:" << endl;
 
         for (EdgeNode* e = this->edges ; e ; e = e->getNext())
-            cout << e << endl;
+            cout << *e->getEdge() << endl;
     }
 
     Edge **Graph::getSortedEdges() const{
@@ -211,8 +216,7 @@ namespace graph{
     }
 
     ostream& operator<<(ostream& os, const Edge& e){
-        os << e.v1->getID() << " 🔗 " << e.v2->getID();
+        os << e.v1->getID() << " 🔗 " << e.v2->getID() << " | Weight: " << e.weight;
         return os;
     }
 }
-

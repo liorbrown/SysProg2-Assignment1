@@ -6,6 +6,10 @@ using namespace std;
 void Heap::insert(Vertex* v){
     v->getIsInHeap() = true;
     v->getNext() = this->head;
+
+    if (this->head)
+        this->head->getPrev() = v;
+    
     this->head = v;
 }
 
@@ -29,5 +33,8 @@ Vertex* Heap::extractMin(){
     if (next)
         next->getPrev() = prev;
     
+    if (this->head == min)
+        this->head = min->getNext();
+        
     return min;
 }

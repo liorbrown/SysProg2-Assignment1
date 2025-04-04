@@ -7,17 +7,18 @@ namespace graph{
     class Algorithms{
         private:
             Algorithms(){}
-            static void setVAttributes(const Graph&, Vertex*);
-            static void initAttributes(const Graph&);
-            static Graph* buildGraph(const Graph&);
-            static void dfsVisit(const Graph&, Vertex*);
+            static void setVAttributes(Graph&, Vertex*);
+            static void initAttributes(Graph&);
+            static Graph* buildGraph(Graph&);
+            static void dfsVisit(Graph&, Vertex*);
             static void relax(const Edge&, Vertex*);
+            static bool isConnect(Graph&);
 
         public:
-            static Graph* bfs(const Graph &, const unsigned int);
-            static Graph* dfs(const Graph&, const unsigned int);
-            static Graph* dijkstra(const Graph&, const unsigned int);
-            static Graph* prim(const Graph&);
-            static Graph* kruskal(const Graph&);
+            static Graph* bfs(Graph&, const unsigned int);
+            static Graph* dfs(Graph&, const unsigned int);
+            static Graph* dijkstra(Graph&, const unsigned int);
+            static Graph* prim(Graph&);
+            static Graph* kruskal(Graph&);
     };
 }

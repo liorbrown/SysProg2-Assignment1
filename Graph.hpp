@@ -46,7 +46,7 @@ namespace graph{
             bool getIsInHeap() const {return this->isInHeap;}
             bool& getIsInHeap() {return this->isInHeap;}
             int getWeight(const Vertex*) const;
-            bool isUnioun(Vertex*);
+            bool isUnioun(Vertex*); 
 
             Vertex& operator++(){
                 this->degree++;
@@ -119,6 +119,7 @@ namespace graph{
             unsigned int getnEdges() const {return this->nEdges;}
             Edge** getSortedEdges() const;
             bool isNegative() const {return this->negativeEdges;}
+            bool isConnected() const;
             void clearVertices() const;
             Vertex& operator[](const int v) const {return this->vertices[v];}
     };

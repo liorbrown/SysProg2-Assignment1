@@ -1,0 +1,26 @@
+CXX=g++
+CXXFLAGS=-std=c++2a -g -c
+
+.PHONY: clean Main test valgrind
+
+Main: main.o Graph.o Heap.o Queue.o Algorithms.o
+	$(CXX) $^ -o main.out
+	./main.out
+
+main.o: main.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+Graph.o: Graph.cpp Graph.hpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+Heap.o: Heap.cpp Heap.hpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+Queue.o: Queue.cpp Queue.hpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+Algorithms.o: Algorithms.cpp Algorithms.hpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	rm *.o *.out

@@ -20,9 +20,13 @@ Vertex* Queue::dequeue(){
     
     Vertex* result = this->tail;
 
-    Vertex* newTail = this->tail->getPrev();
-    newTail->getNext() = nullptr;
-    this->tail = newTail;
+    if (this->head == this->tail)
+        this->head = nullptr;
+    else{
+        Vertex* newTail = this->tail->getPrev();
+        newTail->getNext() = nullptr;
+        this->tail = newTail;
+    }
 
     return result;
 }
