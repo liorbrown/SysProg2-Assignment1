@@ -19,31 +19,39 @@ int main(){
     cout << "BFS" << endl;
     Graph* result = Algorithms::bfs(g, 0);
     result->print_graph();
+    delete result;
 
     result = Algorithms::bfs(g, 2);
     result->print_graph();
+    delete result;
 
     cout << "DFS" << endl;
     result = Algorithms::dfs(g, 2);
     result->print_graph();
+    delete result;
 
     cout << "Dijkstra" << endl;
     result = Algorithms::dijkstra(g, 2);
     result->print_graph();
+    delete result;
 
     cout << "Prim" << endl;
     result = Algorithms::prim(g);
 
     if (!result)
         cout << "Graph not connected" << endl;
-    else
+    else{
         result->print_graph();
+        delete result;
+    }
 
     cout << "Kruskal" << endl;
     result = Algorithms::kruskal(g);
     
     if (!result)
         cout << "Graph not connected" << endl;
-    else
+    else{
         result->print_graph();
+        delete result;
+    }
 }

@@ -47,6 +47,8 @@ void Algorithms::setVAttributes(Graph &g, Vertex* s)
             }
         }
 
+        delete[] adjacents;
+
         v->getColor() = BLACK;
     }
 }
@@ -110,6 +112,8 @@ void Algorithms::dfsVisit(Graph &g, Vertex* v){
         }
     }
 
+    delete[] adjacents;
+
     v->getColor() = BLACK;
 }
 
@@ -128,7 +132,10 @@ bool Algorithms::isConnect(Graph& g){
     
     Graph* bfsGraph = bfs(g,0);
 
-    return (bfsGraph->getnEdges() == bfsGraph->getnVertices() - 1);
+    bool result = bfsGraph->getnEdges() == bfsGraph->getnVertices() - 1;
+    delete bfsGraph;
+
+    return (result);
 }
 
 Graph* Algorithms::dijkstra(Graph &g, const unsigned int s)
@@ -185,7 +192,9 @@ Graph* Algorithms::prim(Graph &g)
                 adjacent->getPI() = v;
                 adjacent->getD() = weight;
             }
-        } 
+        }
+        
+        delete[] adjacents;
     }
 
     Graph* result = buildGraph(g);
@@ -196,7 +205,7 @@ Graph *Algorithms::kruskal(Graph &g)
 {
     if (!isConnect(g))
         return nullptr;
-        
+
     Graph* result = new Graph(g.getnVertices());
 
     Edge** edges = g.getSortedEdges();
@@ -212,6 +221,8 @@ Graph *Algorithms::kruskal(Graph &g)
             v1->getNext() = v2;
         }
     }
+
+    delete[] edges;
   
     return result;
 }
