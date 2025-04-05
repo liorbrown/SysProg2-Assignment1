@@ -84,9 +84,9 @@ Graph *Algorithms::dfs(Graph &g, const unsigned int s){
     
     initAttributes(g);
 
-    for (size_t i = 0; i < nVertices; i++)
+    for (size_t i = s; i < s+ nVertices; i++)
     {
-        Vertex* v = &g[(i + s) % nVertices];
+        Vertex* v = &g[i % nVertices];
 
         if (v->getColor() == WHITE)
             dfsVisit(g, v);
