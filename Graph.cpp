@@ -187,23 +187,26 @@ namespace graph{
 
     Edge **Graph::getSortedEdges() const{
 
-        for (EdgeNode* e = this->edges; e ; e = e->getNext())
-            e->getEdge()->getIsSorted() = false;
-
         Edge** result = new Edge*[this->nEdges];
-
-        for (size_t i = 0; i < this->nEdges; i++){
-            Edge* min = nullptr;
+        int i = 0;
+    
+        for (EdgeNode* e = this->edges; e ; e = e->getNext())
+            result[i++] = e->getEdge();
+    
+        bool isSwap = true;
+    
+        for (size_t i = 0; i < this->nEdges - 1 && isSwap; i++){
+            isSwap = false;
+    
+            for (size_t j = this->nEdges - 1; j > i; j--)
+                if (result[j-1]->getWeight() > result[j]->getWeight()){
+                    Edge* temp = result[j-1];
+                    result[j-1] = result[j];
+                    result[j] = temp;
+    
+                    isSwap = true;
+                }
             
-            for (EdgeNode* e = this->edges; e ; e = e->getNext()){
-                Edge* edge = e->getEdge();
-
-                if (!edge->getIsSorted() && (!min || edge->getWeight() < min->getWeight()))
-                    min = edge;
-            }
-            
-            min->getIsSorted() = true;
-            result[i] = min;
         }
         
         return result;
