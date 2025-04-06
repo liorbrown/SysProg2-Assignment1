@@ -1,11 +1,20 @@
 CXX=g++
 CXXFLAGS=-std=c++2a -g -c
 
-.PHONY: clean Main test valgrind
+.PHONY: clean Main test valgrind build
 
-Main: main.o Graph.o Heap.o Queue.o Algorithms.o
-	$(CXX) $^ -o main.out
+Main: build
 	./main.out
+
+valgrind: build
+	valgrind --leak-check=yes ./main.out
+
+test: GraphTest.o Graph.o Heap.o Queue.o Algorithms.o
+	$(CXX) $^ -o test.out
+	./test.out
+
+build: main.o Graph.o Heap.o Queue.o Algorithms.o
+	$(CXX) $^ -o main.out
 
 main.o: main.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@

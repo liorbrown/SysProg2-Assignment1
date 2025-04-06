@@ -99,6 +99,9 @@ Graph *Algorithms::dfs(Graph &g, const unsigned int s){
 
     const unsigned int nVertices = g.getnVertices();
     
+    if (s >= nVertices)
+        throw out_of_range{"The given vertices not exist in graph 🫤"};
+
     // Init all vertices attributes
     initAttributes(g);
 
@@ -156,12 +159,17 @@ void Algorithms::relax(const Edge& e, Vertex* v){
 
 Graph* Algorithms::dijkstra(Graph &g, const unsigned int s)
 {
+    int nVertices = g.getnVertices();
+
+    if (s >= nVertices)
+        throw out_of_range{"The given vertices not exist in graph 🫤"};
+
     if (g.isNegative())
         throw domain_error{"Can't run dijkstra on graph with negative edges"};
 
     // Init all vertices attributes
     initAttributes(g);
-    int size = g.getnVertices();
+    
 
     // Clear all next and prev vertices pointers, because heap need to use them
     g.clearVertices();
@@ -169,7 +177,7 @@ Graph* Algorithms::dijkstra(Graph &g, const unsigned int s)
     Heap q;
 
     // Inserts all vertices to heap
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; i < nVertices; i++)
         q.insert(&g[i]);
     
     g[s].getD() = 0;
@@ -271,7 +279,7 @@ Graph *Algorithms::kruskal(Graph &g)
 
         // Check if v1 and v2 are in the same group, if not than union them
         // And add a corresponding edge to result graph
-        if (!v1->isUnioun(v2))
+        if (!v1->isUnion(v2))
             result->addEdge(v1->getID(), v2->getID(), edges[i]->getWeight());
     }
 

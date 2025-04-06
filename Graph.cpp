@@ -27,6 +27,9 @@ namespace graph{
 
     Vertex** Vertex::getAdjacents() const{
 
+        if (!this->degree)
+            return nullptr;
+
         Vertex** result = new Vertex*[this->degree];
         int i = 0;
 
@@ -40,6 +43,9 @@ namespace graph{
 
     int Vertex::getWeight(const Vertex* v) const{
 
+        if (!v)
+            throw invalid_argument{"v shell not be null"};
+        
         // Run on all vertex edges
         for (EdgeNode* e = this->edges; e ; e = e->getNext())
             // Check if v is the adjacent of this in current edge
@@ -49,7 +55,7 @@ namespace graph{
         throw runtime_error{"The vertices are not adjacents"};
     }
 
-    bool Vertex::isUnioun(Vertex* v){
+    bool Vertex::isUnion(Vertex* v){
         Vertex* thisRoot = this;
         Vertex* vRoot = v; 
         
@@ -243,6 +249,9 @@ namespace graph{
     }
 
     Edge **Graph::getSortedEdges() const{
+
+        if (!this->nEdges)
+            return nullptr;
 
         Edge** result = new Edge*[this->nEdges];
         int i = 0;

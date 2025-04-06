@@ -29,7 +29,7 @@ namespace graph{
             EdgeNode* edges;
 
             // Enhanced data for algorithms usage
-            unsigned int d;
+            int d;
             Vertex* pi;
             vColor color;
 
@@ -60,8 +60,8 @@ namespace graph{
             EdgeNode* getEdges() const { return this->edges;}
             EdgeNode*& getEdges() { return this->edges;}
             
-            unsigned int getD() const {return this->d;}
-            unsigned int& getD() {return this->d;}
+            int getD() const {return this->d;}
+            int& getD() {return this->d;}
             Vertex* getPI() const {return this->pi;}
             Vertex*& getPI() {return this->pi;}
             vColor getColor() const {return this->color;}
@@ -92,7 +92,7 @@ namespace graph{
             /// @param v Vertex to check and union this vertex with
             /// @return True - if vertices "was" in same group before function, False otherwise
             /// in any case in the end of function they will be in same grouop
-            bool isUnioun(Vertex* v); 
+            bool isUnion(Vertex* v); 
 
             /// @brief This operator increase vertex degree
             /// @return This vertex "After" increasment
