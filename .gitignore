@@ -12,3 +12,5 @@ main.o
 Heap.o
 main.out
 
+test.out
+GraphTest.o

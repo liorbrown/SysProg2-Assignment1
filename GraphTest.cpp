@@ -45,6 +45,9 @@ bool operator==(const Graph& g1, const Graph& g2){
             isFound = *g1Edges[i] == *g2Edges[j];
     }    
     
+    delete[] g1Edges;
+    delete[] g2Edges;
+
     return isFound;
 }
 
@@ -129,6 +132,8 @@ TEST_CASE("Get sorted edges"){
     CHECK_EQ(edges[1]->getWeight(), 1);
     CHECK_EQ(edges[2]->getWeight(), 5);
     CHECK_EQ(edges[3]->getWeight(), 10);
+
+    delete[] edges;
 }
 
 TEST_CASE("Get adjacents"){
@@ -153,6 +158,8 @@ TEST_CASE("Get adjacents"){
     CHECK(contains(adjacents, 3, 3));
     CHECK(contains(adjacents, 3, 4));
     CHECK(contains(adjacents, 3, 5));
+
+    delete[] adjacents;
 }
 
 TEST_CASE("Get vertex weight"){
@@ -173,6 +180,9 @@ TEST_CASE("Get vertex weight"){
 TEST_CASE("Is union function"){
     Graph g{6};
 
+    // Need to clear next and prev before using union-find
+    g.clearVertices();
+
     // Check that first they are not union
     CHECK_FALSE(g[4].isUnion(&g[2]));
 
@@ -188,6 +198,8 @@ TEST_CASE("Is union function"){
 
 TEST_CASE("Queue test"){
     Graph g{6};
+
+    g.clearVertices();
 
     Queue q;
 
@@ -212,6 +224,8 @@ TEST_CASE("Queue test"){
 
 TEST_CASE("Heap test"){
     Graph g{6};
+
+    g.clearVertices();
 
     Heap q;
 
@@ -251,6 +265,7 @@ TEST_CASE("BFS test"){
 
     // Check if handling right graph without edges
     CHECK(*result == g);
+    delete result;
 
     g.addEdge(1,4,10);
     g.addEdge(1,3,-5);
@@ -263,6 +278,7 @@ TEST_CASE("BFS test"){
 
     // Check bfs tree from detached vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::bfs(g, 2);
 
@@ -273,6 +289,7 @@ TEST_CASE("BFS test"){
 
     // Check of tree from connected vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::bfs(g, 3);
 
@@ -281,6 +298,7 @@ TEST_CASE("BFS test"){
 
     // Check that result changes when run on different vertex
     CHECK(*result == excpected);
+    delete result;
 
     g.removeEdge(1,4);
     
@@ -291,6 +309,7 @@ TEST_CASE("BFS test"){
 
     // Check if updates its path to 4
     CHECK(*result == excpected);
+    delete result;
 }
 
 TEST_CASE("Dijkstra test"){
@@ -303,6 +322,7 @@ TEST_CASE("Dijkstra test"){
 
     // Check if handling right graph without edges
     CHECK(*result == g);
+    delete result;
 
     g.addEdge(1,4,10);
     g.addEdge(1,3,-5);
@@ -321,6 +341,7 @@ TEST_CASE("Dijkstra test"){
 
     // Check result from detached vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::dijkstra(g, 2);
 
@@ -331,10 +352,12 @@ TEST_CASE("Dijkstra test"){
 
     // Check result from connected vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::dijkstra(g, 3);
 
     CHECK(*result == excpected);
+    delete result;
 }
 
 TEST_CASE("DFS test"){
@@ -346,6 +369,7 @@ TEST_CASE("DFS test"){
     // Check if handling right graph without edges
     Graph* result = Algorithms::dfs(g, 2);
     CHECK(*result == g);
+    delete result;
        
     g.addEdge(1,4,10);
     g.addEdge(1,3,-5);
@@ -363,6 +387,7 @@ TEST_CASE("DFS test"){
 
     // Check result from detached vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::dfs(g, 2);
 
@@ -371,6 +396,7 @@ TEST_CASE("DFS test"){
 
     // Check result from detached vertex
     CHECK(*result == excpected);
+    delete result;
 
     result = Algorithms::dfs(g, 3);
 
@@ -379,6 +405,7 @@ TEST_CASE("DFS test"){
 
     // Check that result changes when running from different vertex
     CHECK(*result == excpected);
+    delete result;
 
     g.removeEdge(1,4);
     g.removeEdge(1,5);
@@ -391,6 +418,7 @@ TEST_CASE("DFS test"){
 
     // Check for graph that have many of connected components
     CHECK(*result == excpected);
+    delete result;
 }
 
 TEST_CASE( "Prim test"){
@@ -422,6 +450,7 @@ TEST_CASE( "Prim test"){
 
     // Check running prim on connected graph
     CHECK(*result == excpected);
+    delete result;
 }
 
 TEST_CASE( "Kruskal test"){
@@ -453,4 +482,5 @@ TEST_CASE( "Kruskal test"){
 
     // Check running prim on connected graph
     CHECK(*result == excpected);
+    delete result;
 }
