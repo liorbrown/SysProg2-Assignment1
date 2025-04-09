@@ -30,5 +30,3 @@ The project has been tested by valgrind and currently has 0 memory leaks.
 All 1532 lines of code in the project were written by me alone. During
 the implementation of the project, I did not resort to the help of AI at all, 
 and I solved all the technical difficulties myself, in order to truly create an opportunity for myself to learn and solve challenges in the ultimate way.
-
-All 1532 lines of code in the project were written by me alone. During the implementation of the project, I did not resort to the help of AI at all, and I solved all the technical difficulties myself, in order to truly create an opportunity for myself to learn and solve challenges in the ultimate way.
